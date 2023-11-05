@@ -1,0 +1,59 @@
+int fncmp(const void* a , const void* b)
+{
+    return *(int*)b - *(int*)a;
+}
+int lastStoneWeight(int* stones, int stonesSize) {
+    int size = stonesSize - 1;
+    while(size)
+    {
+        qsort(stones,size + 1,sizeof(int),fncmp);
+        stones[0] -= stones[1];
+        stones[1] = stones[size--];
+    }
+    return stones[size];
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+int cmp(const void* a, const void* b)
+{
+    return *(int*)a - *(int*)b;
+}
+int lastStoneWeight(int* stones, int stonesSize)
+{
+    if (stonesSize == 1)
+        return stones[0];
+    qsort(stones, stonesSize, sizeof(int), cmp);
+    stones[stonesSize - 2] = stones[stonesSize - 1] - stones[stonesSize - 2];
+    return lastStoneWeight(stones, stonesSize - 1);
+}
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+int remove_largest(int* stones, int stonesSize) {
+    int largest = 0 , l_idx = 0;
+    for (int i = 0; i < stonesSize; i++) 
+    {
+        if (stones[i] > largest) 
+        {
+            largest = stones[i];
+            l_idx = i;
+        }
+    }
+    stones[l_idx] = stones[stonesSize-1];
+    return largest;
+}
+int lastStoneWeight(int* stones, int stonesSize){
+    while (stonesSize > 1) 
+    {
+        int first = remove_largest(stones, stonesSize--);
+        int second = remove_largest(stones, stonesSize--);
+        if (first != second)
+            stones[stonesSize++] = first-second;
+    }
+    return stonesSize > 0 ? stones[0] : 0; 
+}
